@@ -8,12 +8,12 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class ItemDto {
-    Long id;
+    private Long id;
     @NotBlank(message = "Название не должно быть пустым")
-    String name;
+    private String name;
     @NotBlank(message = "Описание не должно быть пустым")
-    String description;
+    private String description;
     @NotNull(message = "Вещь должна быть либо доступна для аренды либо нет")
-    Boolean available;
-    Long requestId;
+    private Boolean available;
+    private Long requestId;
 }

@@ -15,7 +15,6 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserStorage userStorage;
-    private final UserMapper userMapper;
 
     private static final String USER_NOT_FOUND_ERR = "Пользователь с id %d не найден";
     private static final String USER_WITH_SAME_EMAIL_ERR = "Пользователь с email %s уже существует";
@@ -23,7 +22,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Collection<UserDto> findAllUsers() {
         return userStorage.findAllUsers().stream()
-                .map(userMapper::toUserDto)
+                .map(UserMapper::toUserDto)
                 .toList();
     }
 
@@ -33,13 +32,13 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new NotFoundException(String.format(USER_NOT_FOUND_ERR, userId));
         }
-        return userMapper.toUserDto(user);
+        return UserMapper.toUserDto(user);
     }
 
     @Override
     public UserDto createUser(UserDto userDto) {
         if (isEmailUnique(userDto)) {
-            return userMapper.toUserDto(userStorage.createUser(userMapper.toUser(userDto)));
+            return UserMapper.toUserDto(userStorage.createUser(UserMapper.toUser(userDto)));
         } else {
             throw new ValidationException(String.format(USER_WITH_SAME_EMAIL_ERR, userDto.getEmail()));
         }
@@ -52,7 +51,7 @@ public class UserServiceImpl implements UserService {
             throw new ValidationException(String.format(USER_WITH_SAME_EMAIL_ERR, userDto.getEmail()));
         }
         if (findUserById(userId) != null) {
-            return userMapper.toUserDto(userStorage.updateUserById(userMapper.toUser(userDto)));
+            return UserMapper.toUserDto(userStorage.updateUserById(UserMapper.toUser(userDto)));
         } else {
             throw new NotFoundException(String.format(USER_NOT_FOUND_ERR, userId));
         }

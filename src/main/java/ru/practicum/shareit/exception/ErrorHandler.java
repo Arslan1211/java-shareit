@@ -1,6 +1,5 @@
 package ru.practicum.shareit.exception;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,15 +31,4 @@ public class ErrorHandler {
         log.error(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
-
-    @Getter
-    private static class ErrorResponse {
-        String error;
-
-        public ErrorResponse(String error) {
-            this.error = error;
-        }
-
-    }
-
 }
