@@ -1,43 +1,46 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.booking.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
+
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
-@Table(name = "items")
-public class Item {
+@Table(name = "bookings")
+public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String description;
 
-    @Column(name = "is_available")
-    private Boolean available;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
-    private User owner;
+    private Item item;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
-    private ItemRequest request;
+    private User booker;
+
+    @Enumerated(EnumType.STRING)
+    private BookingStatus status;
 
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Item)) return false;
-        return id != null && id.equals(((Item) o).getId());
+        if (!(o instanceof Booking)) return false;
+        return id != null && id.equals(((Booking) o).getId());
     }
 
     @Override
