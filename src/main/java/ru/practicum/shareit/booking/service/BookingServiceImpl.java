@@ -63,7 +63,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new NotFoundException(String.format(BOOKING_NOT_FOUND_ERR, bookingId)));
 
         if (!booking.getItem().getOwner().getId().equals(userId)) {
-            throw new ValidationException(ONLY_OWNER_CAN_UPDATE_BOOKING_STATUS );
+            throw new ValidationException(ONLY_OWNER_CAN_UPDATE_BOOKING_STATUS);
         }
 
         BookingStatus status = approved ? APPROVED : REJECTED;
@@ -79,7 +79,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new NotFoundException(String.format(BOOKING_NOT_FOUND_ERR, bookingId)));
 
         if (!isBookerOrOwner(booking, userId)) {
-            throw new ValidationException(BOOKING_VIEW_PERMISSION_RESTRICTED );
+            throw new ValidationException(BOOKING_VIEW_PERMISSION_RESTRICTED);
         }
 
         return toBookingDtoResponse(booking);

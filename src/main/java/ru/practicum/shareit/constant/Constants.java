@@ -7,6 +7,6 @@ public class Constants {
     public static final String BOOKING_NOT_FOUND_ERR = "Бронирование с id %d не найдено";
     public static final String ITEM_NOT_FOUND_ERR = "Вещь с id %d не найдена";
     public static final String ITEM_NOT_AVAILABLE = "Товар недоступен для бронирования";
-    public static final String ONLY_OWNER_CAN_UPDATE_BOOKING_STATUS  = "Только владелец может обновить статус бронирования товара";
+    public static final String ONLY_OWNER_CAN_UPDATE_BOOKING_STATUS = "Только владелец может обновить статус бронирования товара";
     public static final String BOOKING_VIEW_PERMISSION_RESTRICTED = "Просмотр бронирования доступен только автору брони или владельцу вещи";
 }
