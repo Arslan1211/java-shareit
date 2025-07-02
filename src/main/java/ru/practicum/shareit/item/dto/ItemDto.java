@@ -1,19 +1,30 @@
 package ru.practicum.shareit.item.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.groups.Default;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ItemDto {
+    @JsonInclude
     private Long id;
-    @NotBlank(message = "Название не должно быть пустым")
+
+    @NotBlank(message = "Имя не должно быть пустым", groups = Default.class)
     private String name;
-    @NotBlank(message = "Описание не должно быть пустым")
+
+    @NotBlank(message = "Описание не должно быть пустым", groups = Default.class)
     private String description;
-    @NotNull(message = "Вещь должна быть либо доступна для аренды либо нет")
+
+    @NotNull(message = "Значение 'Available' не должно быть null", groups = Default.class)
     private Boolean available;
+
     private Long requestId;
 }
