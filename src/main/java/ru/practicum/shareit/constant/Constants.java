@@ -9,4 +9,5 @@ public class Constants {
     public static final String ITEM_NOT_AVAILABLE = "Товар недоступен для бронирования";
     public static final String ONLY_OWNER_CAN_UPDATE_BOOKING_STATUS = "Только владелец может обновить статус бронирования товара";
     public static final String BOOKING_VIEW_PERMISSION_RESTRICTED = "Просмотр бронирования доступен только автору брони или владельцу вещи";
+    public static final String UNKNOWN_STATE = "Неизвестное состояние %s. Поддерживаемые значения: %s ";
 }
