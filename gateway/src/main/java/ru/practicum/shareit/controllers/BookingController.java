@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
+
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -34,7 +36,7 @@ public class BookingController {
     public ResponseEntity<Object> updateBookingStatus(
             @RequestHeader(X_SHARER_USER_ID) @Positive Long userId,
             @PathVariable @Positive Long bookingId,
-            @RequestParam boolean approved
+            @RequestParam Boolean approved
     ) {
         log.info("PATCH /bookings/{} - обновление статуса бронирования от пользователя с ID={}, новый статус: {}",
                 bookingId, userId, approved ? "APPROVED" : "REJECTED");
@@ -54,8 +56,8 @@ public class BookingController {
     public ResponseEntity<Object> getUserBookings(
             @RequestHeader(X_SHARER_USER_ID) @Positive Long userId,
             @RequestParam(defaultValue = "ALL") String state,
-            @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-            @RequestParam(defaultValue = "10") @Positive int size
+            @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+            @RequestParam(defaultValue = "10") @Positive Integer size
     ) {
         log.info("GET /bookings?state={}&from={}&size={} - получение списка бронирований пользователя с ID={}",
                 state, from, size, userId);
@@ -66,8 +68,8 @@ public class BookingController {
     public ResponseEntity<Object> getOwnerBookings(
             @RequestHeader(X_SHARER_USER_ID) @Positive Long userId,
             @RequestParam(defaultValue = "ALL") String state,
-            @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-            @RequestParam(defaultValue = "10") @Positive int size
+            @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+            @RequestParam(defaultValue = "10") @Positive Integer size
     ) {
         log.info("GET /bookings/owner?state={}&from={}&size={} - получение списка бронирований владельца с ID={}",
                 state, from, size, userId);
