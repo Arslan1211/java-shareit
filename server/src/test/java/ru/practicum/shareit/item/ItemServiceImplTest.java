@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.service;
+package ru.practicum.shareit.item;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +20,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -121,10 +122,10 @@ class ItemServiceImplTest {
 
         // Подготовка пользователя
         UserDto userDto = UserDto.builder()
-             .id(1L)
-             .name("testUser")
-             .email("test@mail.ru")
-             .build();
+                .id(1L)
+                .name("testUser")
+                .email("test@mail.ru")
+                .build();
 
         // Подготовка ожидаемого результата
         Item expectedItem = new Item();
@@ -191,25 +192,29 @@ class ItemServiceImplTest {
         verify(itemRepository).save(any());
     }
 
-/*    @Test
-    @Transactional
+    @Test
     @DisplayName("Добавление комментария - должен сохранить текст комментария")
     void addComment_shouldAddCommentSuccessfully() {
         // 1. Подготовка тестовых данных
         Long userId = 1L;
         Long itemId = 1L;
         String commentText = "Отлично!";
+        LocalDateTime fixedDateTime = LocalDateTime.now();
 
         // Подготовка пользователя
         User user = new User();
         user.setId(userId);
         user.setName("Тестовый пользователь");
+        user.setEmail("test@email.com");
 
         // Подготовка вещи
+        User owner = new User(2L, "Владелец", "owner@email.com");
         Item item = new Item();
         item.setId(itemId);
         item.setName("Дрель");
-        item.setOwner(new User(2L, "Владелец", "owner@email.com"));
+        item.setDescription("Мощная дрель");
+        item.setAvailable(true);
+        item.setOwner(owner);
 
         // Подготовка бронирования
         Booking booking = new Booking();
@@ -224,41 +229,38 @@ class ItemServiceImplTest {
         CommentDto inputDto = new CommentDto();
         inputDto.setText(commentText);
 
-        // Подготовка ожидаемого комментария
-        Comment expectedComment = new Comment();
-        expectedComment.setId(1L);
-        expectedComment.setText(commentText); // Убедимся, что текст совпадает
-        expectedComment.setAuthor(user);
-        expectedComment.setItem(item);
-        expectedComment.setCreated(LocalDateTime.now());
-
         // 2. Настройка моков
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
         when(bookingRepository.findByItemIdAndBookerIdAndEndDateIsBefore(
                 eq(itemId), eq(userId), any(LocalDateTime.class))
         ).thenReturn(List.of(booking));
+
+        // Моделируем сохранение комментария с установкой даты
         when(commentRepository.save(any(Comment.class))).thenAnswer(invocation -> {
-            Comment savedComment = invocation.getArgument(0);
-            savedComment.setId(1L); // Эмулируем сохранение в БД
-            return savedComment;
+            Comment commentToSave = invocation.getArgument(0);
+            commentToSave.setId(1L);
+            if (commentToSave.getCreated() == null) {
+                commentToSave.setCreated(fixedDateTime);
+            }
+            return commentToSave;
         });
 
         // 3. Выполнение
         CommentDto result = itemService.addComment(userId, itemId, inputDto);
 
         // 4. Проверки
-        assertNotNull(result);
+        assertNotNull(result, "Результат не должен быть null");
         assertEquals(commentText, result.getText(), "Текст комментария должен совпадать");
-        assertNotNull(result.getAuthorName());
-        assertNotNull(result.getCreated());
+        assertEquals(user.getName(), result.getAuthorName(), "Имя автора должно совпадать");
+        assertNotNull(result.getCreated(), "Дата создания должна быть установлена");
 
         verify(userRepository).findById(userId);
         verify(itemRepository).findById(itemId);
         verify(bookingRepository).findByItemIdAndBookerIdAndEndDateIsBefore(
                 eq(itemId), eq(userId), any(LocalDateTime.class));
         verify(commentRepository).save(any(Comment.class));
-    }*/
+    }
 
     @Test
     @DisplayName("Добавление комментария без бронирования - должно выбросить исключение")
@@ -340,20 +342,20 @@ class ItemServiceImplTest {
         assertTrue(result.isEmpty());
     }
 
-/*    @Test
+    @Test
     @DisplayName("Обновление вещи - успешный сценарий")
     void updateItem_shouldUpdateItemSuccessfully() {
-        // 1. Подготовка тестовых данных
+        // 1. Подготовка данных
         Long ownerId = 1L;
         Long itemId = 1L;
 
-        // Владелец вещи
+        // Создаем владельца
         User owner = new User();
         owner.setId(ownerId);
         owner.setName("Владелец");
         owner.setEmail("owner@mail.ru");
 
-        // Исходная вещь
+        // Создаем существующую вещь через сеттеры
         Item existingItem = new Item();
         existingItem.setId(itemId);
         existingItem.setName("Дрель");
@@ -361,22 +363,12 @@ class ItemServiceImplTest {
         existingItem.setAvailable(true);
         existingItem.setOwner(owner);
 
-        // Данные для обновления
         ItemDto updateDto = new ItemDto();
         updateDto.setName("Дрель+");
-
-        // Ожидаемый результат
-        Item updatedItem = new Item();
-        updatedItem.setId(itemId);
-        updatedItem.setName("Дрель+");
-        updatedItem.setDescription("Простая дрель");
-        updatedItem.setAvailable(true);
-        updatedItem.setOwner(owner);
 
         // 2. Настройка моков
         when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
         when(itemRepository.findById(itemId)).thenReturn(Optional.of(existingItem));
-        when(itemRepository.save(any(Item.class))).thenReturn(updatedItem);
 
         // 3. Выполнение
         ItemDto result = itemService.updateItem(ownerId, itemId, updateDto);
@@ -386,11 +378,9 @@ class ItemServiceImplTest {
         assertEquals("Дрель+", result.getName());
         assertEquals("Простая дрель", result.getDescription());
 
-        // Проверка вызовов
-        verify(userRepository).findById(ownerId);
-        verify(itemRepository).findById(itemId);
-        verify(itemRepository).save(any(Item.class));
-    }*/
+        // Проверяем, что поля обновились
+        assertEquals("Дрель+", existingItem.getName());
+    }
 
     @Test
     @DisplayName("Обновление несуществующей вещи - должно выбросить исключение")

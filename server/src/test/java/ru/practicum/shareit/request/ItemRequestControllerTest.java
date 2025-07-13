@@ -11,15 +11,15 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ItemRequestController.class)
 class ItemRequestControllerTest {
@@ -106,31 +106,6 @@ class ItemRequestControllerTest {
                 .andExpect(jsonPath("$.items[0].id").value(itemDto.getId()))
                 .andExpect(jsonPath("$.items[0].available").value(itemDto.getAvailable()));
     }
-
- /*   @Test
-    void createRequest_withEmptyDescription_shouldReturnBadRequest() throws Exception {
-        ItemRequestDto emptyRequest = ItemRequestDto.builder()
-                .description("")
-                .build();
-
-        mockMvc.perform(post("/requests")
-                        .header("X-Sharer-User-Id", 1L)
-                        .content(mapper.writeValueAsString(emptyRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value(containsString("Описание не может быть пустым")));
-    }*/
-
-/*    @Test
-    void createRequest_withoutDescription_shouldReturnBadRequest() throws Exception {
-        ItemRequestDto noDescriptionRequest = ItemRequestDto.builder().build();
-
-        mockMvc.perform(post("/requests")
-                        .header("X-Sharer-User-Id", 1L)
-                        .content(mapper.writeValueAsString(noDescriptionRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }*/
 
     @Test
     void createRequest_withoutUserIdHeader_shouldReturnBadRequest() throws Exception {

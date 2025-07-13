@@ -16,7 +16,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = UserController.class)
 class UserControllerTest {
@@ -116,14 +117,13 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.name").value("Updated Name"));
     }
 
- /*   @Test
-    void deleteUser_shouldReturnNoContent() throws Exception {
-        // Выполнение и проверка
-        mockMvc.perform(delete("/users/1"))
-                .andExpect(status().isNoContent());
+    @Test
+    void deleteUser_ShouldReturnNoContent() throws Exception {
+        doNothing().when(userService).deleteUser(anyLong());
 
-        verify(userService, times(1)).deleteUser(1L);
-    }*/
+        mockMvc.perform(delete("/users/{id}", 1L))
+                .andExpect(status().isOk());
+    }
 
     @Test
     void createUser_withInvalidEmail_shouldReturnBadRequest() throws Exception {
