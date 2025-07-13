@@ -1,0 +1,17 @@
+#spring:
+#  autoconfigure:
+#    exclude:
+#      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+#      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+
+server:
+  port: 8080
+
+shareit-server:
+  url: http://localhost:9090
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
