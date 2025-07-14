@@ -32,16 +32,14 @@ public class ItemRequestController {
     public ResponseEntity<Object> getAllRequests(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "0") int from,
-            @RequestParam(defaultValue = "10") int size)
-    {
+            @RequestParam(defaultValue = "10") int size) {
         return itemRequestClient.getAllRequests(userId, from, size);
     }
 
     @GetMapping("/{requestId}")
     public ResponseEntity<Object> getRequestById(
             @RequestHeader("X-Sharer-User-Id") Long userId,
-            @PathVariable Long requestId)
-    {
+            @PathVariable Long requestId) {
         return itemRequestClient.getRequestById(userId, requestId);
     }
 }
