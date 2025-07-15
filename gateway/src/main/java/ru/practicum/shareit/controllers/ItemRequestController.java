@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.client.ItemRequestClient;
 import ru.practicum.shareit.dto.ItemRequestDto;
 
+import static ru.practicum.shareit.constant.Constants.X_SHARER_USER_ID;
+
 @RestController
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
@@ -17,20 +19,20 @@ public class ItemRequestController {
 
     @PostMapping
     public ResponseEntity<Object> createRequest(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestHeader(X_SHARER_USER_ID) Long userId,
             @Validated @RequestBody ItemRequestDto itemRequestDto
     ) {
         return itemRequestClient.createRequest(userId, itemRequestDto);
     }
 
     @GetMapping
-    public ResponseEntity<Object> getUserRequests(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ResponseEntity<Object> getUserRequests(@RequestHeader(X_SHARER_USER_ID) Long userId) {
         return itemRequestClient.getUserRequests(userId);
     }
 
     @GetMapping("/all")
     public ResponseEntity<Object> getAllRequests(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestHeader(X_SHARER_USER_ID) Long userId,
             @RequestParam(defaultValue = "0") int from,
             @RequestParam(defaultValue = "10") int size) {
         return itemRequestClient.getAllRequests(userId, from, size);
@@ -38,7 +40,7 @@ public class ItemRequestController {
 
     @GetMapping("/{requestId}")
     public ResponseEntity<Object> getRequestById(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestHeader(X_SHARER_USER_ID) Long userId,
             @PathVariable Long requestId) {
         return itemRequestClient.getRequestById(userId, requestId);
     }
